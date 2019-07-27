@@ -26,6 +26,7 @@ export interface IProjectTaskOptions {
   isIncrementalBuildAllowed: boolean;
   packageChangeAnalyzer: PackageChangeAnalyzer;
   packageDepsFilename: string;
+  staticMode: boolean;
 }
 
 function _areShallowEqual(object1: JsonObject, object2: JsonObject, writer: ITaskWriter): boolean {
@@ -61,6 +62,7 @@ export class ProjectTask implements ITaskDefinition {
   private _commandToRun: string;
   private _packageChangeAnalyzer: PackageChangeAnalyzer;
   private _packageDepsFilename: string;
+  private _staticMode: boolean;
 
   public constructor(options: IProjectTaskOptions) {
     this._rushProject = options.rushProject;
@@ -69,6 +71,7 @@ export class ProjectTask implements ITaskDefinition {
     this.isIncrementalBuildAllowed = options.isIncrementalBuildAllowed;
     this._packageChangeAnalyzer = options.packageChangeAnalyzer;
     this._packageDepsFilename = options.packageDepsFilename;
+    this._staticMode = options.staticMode;
 }
 
   public execute(writer: ITaskWriter): Promise<TaskStatus> {
@@ -76,6 +79,12 @@ export class ProjectTask implements ITaskDefinition {
       if (!this._commandToRun) {
         this.hadEmptyScript = true;
       }
+
+      if (this._staticMode) {
+        writer.write(this._commandToRun);
+        return Promise.resolve(TaskStatus.Success);
+      }
+
       const deps: IPackageDependencies | undefined = this._getPackageDependencies(writer);
       return this._executeTask(writer, deps);
     } catch (error) {

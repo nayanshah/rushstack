@@ -84,3 +84,8 @@ export {
   ExperimentsConfiguration,
   IExperimentsJson
 } from './api/ExperimentsConfiguration';
+
+export {
+  StaticGraph,
+  IStaticProject
+} from './api/StaticGraph';

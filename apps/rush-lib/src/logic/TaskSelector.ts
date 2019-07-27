@@ -20,6 +20,7 @@ export interface ITaskSelectorConstructor {
   ignoreMissingScript: boolean;
   ignoreDependencyOrder: boolean;
   packageDepsFilename: string;
+  staticMode?: boolean;
 }
 
 /**
@@ -190,7 +191,8 @@ export class TaskSelector {
         commandToRun: this._getScriptToRun(project),
         isIncrementalBuildAllowed: this._options.isIncrementalBuildAllowed,
         packageChangeAnalyzer: this._packageChangeAnalyzer,
-        packageDepsFilename: this._options.packageDepsFilename
+        packageDepsFilename: this._options.packageDepsFilename,
+        staticMode: this._options.staticMode || false
       });
 
       if (!this._taskCollection.hasTask(projectTask.name)) {
